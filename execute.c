@@ -6,9 +6,16 @@
 #define DELIM " \t\r\n\a"
 
 stack_t *stack;
-int execute(char *str, size_t lineNumber)
+/**
+ * execute - excutes opocode
+ * @str: opcode
+ * @line_number: line number
+ * Return: 0 if success other int if error occurs
+ */
+int execute(char *str, size_t line_number)
 {
-	char *tok, *line = strdup(str);
+	char *tok, *line = _strdup(str);
+	int status = 0;
 
 	tok = strtok(line, DELIM);
 	if (tok != NULL)
@@ -19,19 +26,19 @@ int execute(char *str, size_t lineNumber)
 			if (tok != NULL)
 				add_node(&stack, atoi(tok));
 			else
-				return -1;
+				status = -1;
 		}
 		else if (strcmp(tok, "pall") == 0)
 		{
-			tok = strtok(NULL, "\n");
-			if (tok != NULL && !isspace(tok[0]))
-				printf("%s\n", tok);
+			tok = strtok(NULL, DELIM);
+			if (tok == NULL)
+				print_dlistint(stack, line_number);
 			else
-				print_dlistint(stack, lineNumber);
+				status = -1;
 		}
 	}
-
-	return (0);
+	free(line);
+	return (status);
 }
 
 /**
