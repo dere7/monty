@@ -5,14 +5,14 @@
 #include "monty.h"
 #define DELIM " \t\r\n\a"
 
-stack_t *stack;
 /**
  * execute - excutes opocode
  * @str: opcode
+ * @stack: stack
  * @line_number: line number
  * Return: 0 if success other int if error occurs
  */
-int execute(char *str, size_t line_number)
+int execute(char *str, stack_t **stack, size_t line_number)
 {
 	char *tok, *line = _strdup(str);
 	int status = 0;
@@ -24,7 +24,7 @@ int execute(char *str, size_t line_number)
 		{
 			tok = strtok(NULL, DELIM);
 			if (tok != NULL)
-				add_node(&stack, atoi(tok));
+				add_node(stack, atoi(tok));
 			else
 				status = -1;
 		}
@@ -32,7 +32,7 @@ int execute(char *str, size_t line_number)
 		{
 			tok = strtok(NULL, DELIM);
 			if (tok == NULL)
-				print_dlistint(stack, line_number);
+				print_dlistint(*stack, line_number);
 			else
 				status = -1;
 		}
@@ -67,6 +67,7 @@ stack_t *add_node(stack_t **head, int n)
 /**
  * print_dlistint - prints doubly linked list
  * @h: head of the list
+ * @line_number: line number
  * Return: number of nodes
  */
 size_t print_dlistint(stack_t *h, unsigned int line_number)
@@ -81,4 +82,19 @@ size_t print_dlistint(stack_t *h, unsigned int line_number)
 	}
 
 	return (i);
+}
+/**
+ * free_dlistint - frees list
+ * @head: head of list
+ */
+void free_dlistint(stack_t *head)
+{
+	stack_t *h;
+
+	while (head)
+	{
+		h = head->next;
+		free(head);
+		head = h;
+	}
 }

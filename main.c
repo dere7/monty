@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+stack_t *stack;
 int main(int argc, char const *argv[])
 {
 	FILE *fp;
@@ -22,10 +23,11 @@ int main(int argc, char const *argv[])
 	}
 	while (fgets(opcode, BUFSIZE, fp) != NULL)
 	{
-		if (execute(opcode, lineNumber) != 0)
+		if (execute(opcode, &stack, lineNumber) != 0)
 		{
 			fprintf(stderr, "L%ld: unknown instruction %s\n", lineNumber, opcode);
 			fclose(fp);
+			free_dlistint(stack);
 			exit(EXIT_FAILURE);
 		}
 		lineNumber++;
