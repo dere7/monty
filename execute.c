@@ -1,44 +1,83 @@
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <stdio.h>
 #include "monty.h"
-#define DELIM " \t\r\n\a"
+
+#define DELIM " \t\r\a\n"
+char *arg;
 
 /**
- * execute - excutes opocode
+ * execute - executes opcode
  * @str: opcode
  * @stack: stack
  * @line_number: line number
  * Return: 0 if success other int if error occurs
  */
-int execute(char *str, stack_t **stack, size_t line_number)
+int execute(char *str, stack_t **stack, unsigned int line_number)
 {
 	char *tok, *line = _strdup(str);
-	int status = 0;
+	int i, status = 0;
+	static instruction_t instructions[] = {
+			{"push", push_node},
+			{"pall", print_stack},
+			{NULL, NULL}
+	};
 
 	tok = strtok(line, DELIM);
-	if (tok != NULL)
+	for (i = 0; tok != NULL && instructions[i].opcode != NULL; i++)
+		if (strcmp(tok, instructions[i].opcode) == 0)
+		{
+			tok = strtok(NULL, DELIM);
+			arg = tok;
+			status = instructions[i].f(stack, line_number);
+			break;
+		}
+	if (instructions[i].opcode == NULL)
 	{
-		if (strcmp(tok, "push") == 0)
-		{
-			tok = strtok(NULL, DELIM);
-			if (tok != NULL)
-				add_node(stack, atoi(tok));
-			else
-				status = -1;
-		}
-		else if (strcmp(tok, "pall") == 0)
-		{
-			tok = strtok(NULL, DELIM);
-			if (tok == NULL)
-				print_dlistint(*stack, line_number);
-			else
-				status = -1;
-		}
+		fprintf(stderr, "L%d: unknown instruction %s\n", line_number, tok);
+		return (EXIT_FAILURE);
 	}
 	free(line);
 	return (status);
+}
+
+/**
+ * push_node - pushes node
+ * @stack: stack
+ * @line_number: line number
+ * Return: returns 0 if no error
+ */
+int push_node(stack_t **stack, unsigned int line_number)
+{
+	char *endPtr;
+
+	strtol(arg == NULL ? "" : arg, &endPtr, 10);
+	if (arg == NULL || *endPtr != '\0')
+	{
+		fprintf(stderr, "L%d: usage: push integer\n", line_number);
+		return (EXIT_FAILURE);
+	}
+	add_node(stack, atoi(arg));
+	return (EXIT_SUCCESS);
+}
+
+/**
+ * print_stack - prints stack
+ * @stack: stack
+ * @line_number: line number
+ * Return: returns 0 if no error
+ */
+int print_stack(stack_t **stack,
+				__attribute__((unused)) unsigned int line_number)
+{
+	stack_t *h;
+
+	if (stack == NULL && *stack == NULL)
+		return (EXIT_SUCCESS);
+	for (h = *stack; h != NULL; h = h->next)
+		printf("%d\n", h->n);
+	return (EXIT_SUCCESS);
 }
 
 /**
@@ -64,25 +103,6 @@ stack_t *add_node(stack_t **head, int n)
 	return (new);
 }
 
-/**
- * print_dlistint - prints doubly linked list
- * @h: head of the list
- * @line_number: line number
- * Return: number of nodes
- */
-size_t print_dlistint(stack_t *h, unsigned int line_number)
-{
-	size_t i = line_number;
-
-	while (h)
-	{
-		printf("%d\n", h->n);
-		h = h->next;
-		i++;
-	}
-
-	return (i);
-}
 /**
  * free_dlistint - frees list
  * @head: head of list

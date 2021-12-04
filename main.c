@@ -1,14 +1,20 @@
 #include "monty.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-stack_t *stack;
+
+/**
+ * main - entry point
+ * @argc: argument length
+ * @argv: arguments
+ * Return: 0 if no error
+ */
 int main(int argc, char const *argv[])
 {
 	FILE *fp;
 	char opcode[BUFSIZE];
+	stack_t *stack = NULL;
 	size_t lineNumber = 1;
+	int status = 0;
 
 	if (argc != 2)
 	{
@@ -23,15 +29,12 @@ int main(int argc, char const *argv[])
 	}
 	while (fgets(opcode, BUFSIZE, fp) != NULL)
 	{
-		if (execute(opcode, &stack, lineNumber) != 0)
-		{
-			fprintf(stderr, "L%ld: unknown instruction %s\n", lineNumber, opcode);
-			fclose(fp);
-			free_dlistint(stack);
-			exit(EXIT_FAILURE);
-		}
+		status = execute(opcode, &stack, lineNumber);
+		if (status != 0)
+			break;
 		lineNumber++;
 	}
 	fclose(fp);
-	return (EXIT_SUCCESS);
+	free_dlistint(stack);
+	return (status);
 }

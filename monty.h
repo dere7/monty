@@ -29,13 +29,15 @@ typedef struct stack_s
 typedef struct instruction_s
 {
 	char *opcode;
-	void (*f)(stack_t **stack, unsigned int line_number);
+	int (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
+extern char *arg;
 extern stack_t *stack;
 stack_t *add_node(stack_t **head, int n);
-size_t print_dlistint(stack_t *head, unsigned int line_number);
-int execute(char *str, stack_t **stack, size_t line_number);
+int execute(char *str, stack_t **stack, unsigned int line_number);
 void free_dlistint(stack_t *head);
+int push_node(stack_t **stack, unsigned int line_number);
+int print_stack(stack_t **stack, unsigned int line_number);
 
 /* string utilities */
 char *_strdup(char *str);
