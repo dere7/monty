@@ -35,12 +35,19 @@ extern char *arg;
 extern stack_t *stack;
 stack_t *add_node(stack_t **head, int n);
 int execute(char *str, stack_t **stack, unsigned int line_number);
-void free_dlistint(stack_t *head);
-int push_node(stack_t **stack, unsigned int line_number);
-int print_stack(stack_t **stack, unsigned int line_number);
-int print_head(stack_t **stack, unsigned int line_number);
-int pop_node(stack_t **stack, unsigned int line_number);
-int swap_nodes(stack_t **stack, unsigned int line_number);
+void free_stack(stack_t *head);
+/* opcodes */
+int push(stack_t **stack, unsigned int line_number);
+int pall(stack_t **stack, unsigned int line_number);
+int pint(stack_t **stack, unsigned int line_number);
+int pop(stack_t **stack, unsigned int line_number);
+int swap(stack_t **stack, unsigned int line_number);
+int add(stack_t **stack, unsigned int line_number);
+int sub(stack_t **stack, unsigned int line_number);
+int mul(stack_t **stack, unsigned int line_number);
+int _div(stack_t **stack, unsigned int line_number);
+int mod(stack_t **stack, unsigned int line_number);
+int nop(stack_t **stack, unsigned int line_number);
 
 /* string utilities */
 char *_strdup(char *str);

@@ -19,11 +19,17 @@ int execute(char *str, stack_t **stack, unsigned int line_number)
 	char *tok, *line = _strdup(str);
 	int i, status = 0;
 	static instruction_t instructions[] = {
-			{"push", push_node},
-			{"pall", print_stack},
-			{"pint", print_head},
-			{"pop",  pop_node},
-			{"swap", swap_nodes},
+			{"push", push},
+			{"pall", pall},
+			{"pint", pint},
+			{"pop",  pop},
+			{"swap", swap},
+			{"add",  add},
+			{"nop",  nop},
+			{"sub",  sub},
+			{"div",  _div},
+			{"mul",  mul},
+			{"mod",  mod},
 			{NULL, NULL}
 	};
 
@@ -46,12 +52,12 @@ int execute(char *str, stack_t **stack, unsigned int line_number)
 }
 
 /**
- * push_node - pushes node
+ * push - pushes node
  * @stack: stack
  * @line_number: line number
  * Return: returns 0 if no error
  */
-int push_node(stack_t **stack, unsigned int line_number)
+int push(stack_t **stack, unsigned int line_number)
 {
 	char *endPtr;
 
@@ -66,13 +72,13 @@ int push_node(stack_t **stack, unsigned int line_number)
 }
 
 /**
- * print_stack - prints stack
+ * pall - prints stack
  * @stack: stack
  * @line_number: line number
  * Return: returns 0 if no error
  */
-int print_stack(stack_t **stack,
-				__attribute__((unused)) unsigned int line_number)
+int pall(stack_t **stack,
+		 __attribute__((unused)) unsigned int line_number)
 {
 	stack_t *h;
 
@@ -84,12 +90,12 @@ int print_stack(stack_t **stack,
 }
 
 /**
- * print_head - prints value at the top stack
+ * pint - prints value at the top stack
  * @stack: stack
  * @line_number: line number
  * Return: returns 0 if no error
  */
-int print_head(stack_t **stack, unsigned int line_number)
+int pint(stack_t **stack, unsigned int line_number)
 {
 	if (*stack == NULL)
 	{
@@ -101,12 +107,12 @@ int print_head(stack_t **stack, unsigned int line_number)
 }
 
 /**
- * pop_node - removes value at the top stack
+ * pop - removes value at the top stack
  * @stack: stack
  * @line_number: line number
  * Return: returns 0 if no error
  */
-int pop_node(stack_t **stack, unsigned int line_number)
+int pop(stack_t **stack, unsigned int line_number)
 {
 	stack_t *h;
 
