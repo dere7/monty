@@ -38,6 +38,9 @@ int execute(char *str, stack_t **stack, unsigned int line_number);
 void free_dlistint(stack_t *head);
 int push_node(stack_t **stack, unsigned int line_number);
 int print_stack(stack_t **stack, unsigned int line_number);
+int print_head(stack_t **stack, unsigned int line_number);
+int pop_node(stack_t **stack, unsigned int line_number);
+int swap_nodes(stack_t **stack, unsigned int line_number);
 
 /* string utilities */
 char *_strdup(char *str);

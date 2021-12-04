@@ -21,6 +21,9 @@ int execute(char *str, stack_t **stack, unsigned int line_number)
 	static instruction_t instructions[] = {
 			{"push", push_node},
 			{"pall", print_stack},
+			{"pint", print_head},
+			{"pop",  pop_node},
+			{"swap", swap_nodes},
 			{NULL, NULL}
 	};
 
@@ -36,7 +39,7 @@ int execute(char *str, stack_t **stack, unsigned int line_number)
 	if (instructions[i].opcode == NULL)
 	{
 		fprintf(stderr, "L%d: unknown instruction %s\n", line_number, tok);
-		return (EXIT_FAILURE);
+		status = (EXIT_FAILURE);
 	}
 	free(line);
 	return (status);
@@ -81,40 +84,41 @@ int print_stack(stack_t **stack,
 }
 
 /**
- * add_node - add new node at the begginning of list
- * @head: head of list to be added
- * @n: int to be added
- * Return: Pointer to newly created node
+ * print_head - prints value at the top stack
+ * @stack: stack
+ * @line_number: line number
+ * Return: returns 0 if no error
  */
-stack_t *add_node(stack_t **head, int n)
+int print_head(stack_t **stack, unsigned int line_number)
 {
-	stack_t *new;
-
-	new = malloc(sizeof(stack_t));
-	if (new == NULL)
-		return (NULL);
-	new->n = n;
-	new->prev = NULL;
-	new->next = *head;
-	if (*head != NULL)
-		(*head)->prev = new;
-	*head = new;
-
-	return (new);
+	if (*stack == NULL)
+	{
+		fprintf(stderr, "L%d: can't pint, stack empty\n", line_number);
+		return (EXIT_FAILURE);
+	}
+	printf("%d\n", (*stack)->n);
+	return (EXIT_SUCCESS);
 }
 
 /**
- * free_dlistint - frees list
- * @head: head of list
+ * pop_node - removes value at the top stack
+ * @stack: stack
+ * @line_number: line number
+ * Return: returns 0 if no error
  */
-void free_dlistint(stack_t *head)
+int pop_node(stack_t **stack, unsigned int line_number)
 {
 	stack_t *h;
 
-	while (head)
+	if (*stack == NULL)
 	{
-		h = head->next;
-		free(head);
-		head = h;
+		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
+		return (EXIT_FAILURE);
 	}
+	h = (*stack)->next;
+	free(*stack);
+	if (h != NULL)
+		h->prev = NULL;
+	*stack = h;
+	return (EXIT_SUCCESS);
 }
