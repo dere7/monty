@@ -48,6 +48,8 @@ int mul(stack_t **stack, unsigned int line_number);
 int _div(stack_t **stack, unsigned int line_number);
 int mod(stack_t **stack, unsigned int line_number);
 int nop(stack_t **stack, unsigned int line_number);
+int pchar(stack_t **stack, unsigned int line_number);
+int pstr(stack_t **stack, unsigned int line_number);
 
 /* string utilities */
 char *_strdup(char *str);

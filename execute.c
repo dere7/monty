@@ -30,12 +30,16 @@ int execute(char *str, stack_t **stack, unsigned int line_number)
 			{"div",  _div},
 			{"mul",  mul},
 			{"mod",  mod},
+			{"pchar", pchar},
+			{"pstr", pstr},
 			{NULL, NULL}
 	};
 
 	tok = strtok(line, DELIM);
 	for (i = 0; tok != NULL && instructions[i].opcode != NULL; i++)
-		if (strcmp(tok, instructions[i].opcode) == 0)
+		if (tok[0] == '#')
+			break;
+		else if (strcmp(tok, instructions[i].opcode) == 0)
 		{
 			tok = strtok(NULL, DELIM);
 			arg = tok;

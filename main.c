@@ -129,7 +129,7 @@ int mod(stack_t **stack, unsigned int line_number)
 		fprintf(stderr, "L%d: division by zero\n", line_number);
 		return (EXIT_FAILURE);
 	}
-	modulus = (*stack)->next->n * (*stack)->n;
+	modulus = (*stack)->next->n % (*stack)->n;
 	pop(stack, line_number);
 	(*stack)->n = modulus;
 	return (EXIT_SUCCESS);
