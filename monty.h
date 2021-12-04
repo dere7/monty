@@ -50,6 +50,8 @@ int mod(stack_t **stack, unsigned int line_number);
 int nop(stack_t **stack, unsigned int line_number);
 int pchar(stack_t **stack, unsigned int line_number);
 int pstr(stack_t **stack, unsigned int line_number);
+int rotl(stack_t **stack, unsigned int line_number);
+int rotr(stack_t **stack, unsigned int line_number);
 
 /* string utilities */
 char *_strdup(char *str);

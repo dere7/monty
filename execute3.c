@@ -42,3 +42,38 @@ int pstr(stack_t **stack, unsigned int line_number __attribute__((unused)))
 	printf("\n");
 	return (EXIT_SUCCESS);
 }
+/**
+ * rotl - rotates the stack to the top
+ * @stack: stack
+ * @line_number: line number
+ * Return: 0 if no error
+ */
+int rotl(stack_t **stack, unsigned int line_number __attribute__((unused)))
+{
+	stack_t *temp = *stack, *h;
+
+	*stack = (*stack)->next;
+	(*stack)->prev = NULL;
+	temp->next = NULL;
+	for (h = *stack; h->next != NULL; h = h->next)
+		;
+	h->next = temp;
+	return (EXIT_SUCCESS);
+}
+/**
+ * rotr - rotates the stack to the bottom
+ * @stack: stack
+ * @line_number: line number
+ * Return: 0 if no error
+ */
+int rotr(stack_t **stack, unsigned int line_number __attribute__((unused)))
+{
+	stack_t *h;
+
+	for (h = *stack; h->next != NULL; h = h->next)
+		;
+	h->prev->next = NULL;
+	h->next = *stack;
+	*stack = h;
+	return (EXIT_SUCCESS);
+}
