@@ -21,6 +21,7 @@ int execute(char *str, stack_t **stack, unsigned int line_number)
 	free(line);
 	return (status);
 }
+
 /**
  * find_match - findes match for opcode and execute it
  * @stack: stack
@@ -33,13 +34,20 @@ int find_match(stack_t **stack, char *opcode, char *arg,
 			   unsigned int line_number)
 {
 	static instruction_t instructions[] = {
-			{"pall",  pall}, {"pint",  pint},
-			{"pop",   pop}, {"swap",  swap},
-			{"add",   add}, {"nop",   nop},
-			{"sub",   sub}, {"div",   _div},
-			{"mul",   mul}, {"mod",   mod},
-			{"pchar", pchar}, {"pstr",  pstr},
-			{"rotl",  rotl}, {"rotr",  rotr},
+			{"pall",  pall},
+			{"pint",  pint},
+			{"pop",   pop},
+			{"swap",  swap},
+			{"add",   add},
+			{"nop",   nop},
+			{"sub",   sub},
+			{"div",   _div},
+			{"mul",   mul},
+			{"mod",   mod},
+			{"pchar", pchar},
+			{"pstr",  pstr},
+			{"rotl",  rotl},
+			{"rotr",  rotr},
 			{NULL, NULL}
 	};
 	int i, status = 0;
@@ -65,11 +73,11 @@ int find_match(stack_t **stack, char *opcode, char *arg,
 			status = instructions[i].f(stack, line_number);
 			break;
 		}
-		if (instructions[i].opcode == NULL)
-		{
-			fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
-			status = (EXIT_FAILURE);
-		}
+	}
+	if (instructions[i].opcode == NULL)
+	{
+		fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
+		status = (EXIT_FAILURE);
 	}
 	return (status);
 }
