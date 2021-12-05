@@ -1,6 +1,3 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stddef.h>
 #include "monty.h"
 /**
  * swap - swaps the top two elements

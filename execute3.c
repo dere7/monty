@@ -1,6 +1,4 @@
 #include "monty.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 /**
  * pchar - prints the char at the top of the stack
@@ -52,14 +50,16 @@ int pstr(stack_t **stack, unsigned int line_number __attribute__((unused)))
 int rotl(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
 	stack_t *temp = *stack, *h;
+
 	if (*stack && (*stack)->next)
 	{
 		*stack = (*stack)->next;
 		(*stack)->prev = NULL;
-		temp->next = NULL;
-		for (h = *stack; h->next != NULL; h = h->next);
+		for (h = *stack; h->next != NULL; h = h->next)
+			;
 		h->next = temp;
-
+		temp->prev = h;
+		temp->next = NULL;
 	}
 	return (EXIT_SUCCESS);
 }
@@ -73,11 +73,15 @@ int rotl(stack_t **stack, unsigned int line_number __attribute__((unused)))
 int rotr(stack_t **stack, unsigned int line_number __attribute__((unused)))
 {
 	stack_t *h;
+
 	if (*stack && (*stack)->next)
 	{
-		for (h = *stack; h->next != NULL; h = h->next);
+		for (h = *stack; h->next != NULL; h = h->next)
+			;
 		h->prev->next = NULL;
 		h->next = *stack;
+		h->prev = NULL;
+		(*stack)->prev = h;
 		*stack = h;
 	}
 	return (EXIT_SUCCESS);

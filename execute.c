@@ -1,11 +1,8 @@
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
 #include "monty.h"
 
 #define DELIM " \t\r\a\n"
-char *arg;
+
+int is_queue = 0;
 
 /**
  * execute - executes opcode
@@ -17,43 +14,63 @@ char *arg;
 int execute(char *str, stack_t **stack, unsigned int line_number)
 {
 	char *tok, *line = _strdup(str);
-	int i, status = 0;
-	static instruction_t instructions[] = {
-			{"push", push},
-			{"pall", pall},
-			{"pint", pint},
-			{"pop",  pop},
-			{"swap", swap},
-			{"add",  add},
-			{"nop",  nop},
-			{"sub",  sub},
-			{"div",  _div},
-			{"mul",  mul},
-			{"mod",  mod},
-			{"pchar", pchar},
-			{"pstr", pstr},
-			{"rotl", rotl},
-			{"rotr", rotr},
-			{NULL, NULL}
-	};
+	int status = 0;
 
 	tok = strtok(line, DELIM);
-	for (i = 0; tok != NULL && instructions[i].opcode != NULL; i++)
-		if (tok[0] == '#')
+	status = find_match(stack, tok, strtok(NULL, DELIM), line_number);
+	free(line);
+	return (status);
+}
+/**
+ * find_match - findes match for opcode and execute it
+ * @stack: stack
+ * @opcode: opcode
+ * @arg: arg
+ * @line_number: line_number
+ * Return: status code (0 if no error)
+ */
+int find_match(stack_t **stack, char *opcode, char *arg,
+			   unsigned int line_number)
+{
+	static instruction_t instructions[] = {
+			{"pall",  pall}, {"pint",  pint},
+			{"pop",   pop}, {"swap",  swap},
+			{"add",   add}, {"nop",   nop},
+			{"sub",   sub}, {"div",   _div},
+			{"mul",   mul}, {"mod",   mod},
+			{"pchar", pchar}, {"pstr",  pstr},
+			{"rotl",  rotl}, {"rotr",  rotr},
+			{NULL, NULL}
+	};
+	int i, status = 0;
+
+	for (i = 0; opcode != NULL && instructions[i].opcode != NULL; i++)
+	{
+		if (opcode[0] == '#')
 			break;
-		else if (strcmp(tok, instructions[i].opcode) == 0)
+		else if (strcmp(opcode, "queue") == 0)
 		{
-			tok = strtok(NULL, DELIM);
-			arg = tok;
+			is_queue = 1;
+			break;
+		} else if (strcmp(opcode, "stack") == 0)
+		{
+			is_queue = 0;
+			break;
+		} else if (strcmp(opcode, "push") == 0)
+		{
+			status = push(stack, line_number, arg);
+			break;
+		} else if (strcmp(opcode, instructions[i].opcode) == 0)
+		{
 			status = instructions[i].f(stack, line_number);
 			break;
 		}
-	if (instructions[i].opcode == NULL)
-	{
-		fprintf(stderr, "L%d: unknown instruction %s\n", line_number, tok);
-		status = (EXIT_FAILURE);
+		if (instructions[i].opcode == NULL)
+		{
+			fprintf(stderr, "L%d: unknown instruction %s\n", line_number, opcode);
+			status = (EXIT_FAILURE);
+		}
 	}
-	free(line);
 	return (status);
 }
 
@@ -61,9 +78,10 @@ int execute(char *str, stack_t **stack, unsigned int line_number)
  * push - pushes node
  * @stack: stack
  * @line_number: line number
+ * @arg: number string
  * Return: returns 0 if no error
  */
-int push(stack_t **stack, unsigned int line_number)
+int push(stack_t **stack, unsigned int line_number, char *arg)
 {
 	char *endPtr;
 
@@ -73,7 +91,7 @@ int push(stack_t **stack, unsigned int line_number)
 		fprintf(stderr, "L%d: usage: push integer\n", line_number);
 		return (EXIT_FAILURE);
 	}
-	add_node(stack, atoi(arg));
+	is_queue ? add_node_end(stack, atoi(arg)) : add_node(stack, atoi(arg));
 	return (EXIT_SUCCESS);
 }
 
@@ -109,28 +127,5 @@ int pint(stack_t **stack, unsigned int line_number)
 		return (EXIT_FAILURE);
 	}
 	printf("%d\n", (*stack)->n);
-	return (EXIT_SUCCESS);
-}
-
-/**
- * pop - removes value at the top stack
- * @stack: stack
- * @line_number: line number
- * Return: returns 0 if no error
- */
-int pop(stack_t **stack, unsigned int line_number)
-{
-	stack_t *h;
-
-	if (*stack == NULL)
-	{
-		fprintf(stderr, "L%d: can't pop an empty stack\n", line_number);
-		return (EXIT_FAILURE);
-	}
-	h = (*stack)->next;
-	free(*stack);
-	if (h != NULL)
-		h->prev = NULL;
-	*stack = h;
 	return (EXIT_SUCCESS);
 }

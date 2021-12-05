@@ -1,6 +1,4 @@
 #include "monty.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 /**
  * main - entry point
@@ -38,7 +36,6 @@ int main(int argc, char const *argv[])
 	free_stack(stack);
 	return (status);
 }
-
 
 /**
  * sub - subtracts the top two elements

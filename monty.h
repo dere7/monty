@@ -2,6 +2,10 @@
 #define MONTY_H
 #define BUFSIZE 120
 #include <stddef.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
  * @n: integer
@@ -31,13 +35,17 @@ typedef struct instruction_s
 	char *opcode;
 	int (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
-extern char *arg;
+extern int is_queue;
 extern stack_t *stack;
 stack_t *add_node(stack_t **head, int n);
+stack_t *add_node_end(stack_t **head, int n);
 int execute(char *str, stack_t **stack, unsigned int line_number);
+int find_match(stack_t **stack, char *opcode, char *arg,
+			   unsigned int line_number);
 void free_stack(stack_t *head);
+
 /* opcodes */
-int push(stack_t **stack, unsigned int line_number);
+int push(stack_t **stack, unsigned int line_number, char *arg);
 int pall(stack_t **stack, unsigned int line_number);
 int pint(stack_t **stack, unsigned int line_number);
 int pop(stack_t **stack, unsigned int line_number);
